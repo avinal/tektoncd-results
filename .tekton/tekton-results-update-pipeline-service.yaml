@@ -16,7 +16,7 @@ spec:
       value: "{{ revision }}"
     - name: infra-deployment-update-script
       value: |
-        sed -i -E 's/[0-9a-f]{40}/{{ revision }}/g' operator/gitops/argocd/pipeline-service/tekton-results/base/kustomization.yaml
+        sed -i -E 's/[0-9a-f]{40}/{{ revision }}/g' operator/gitops/argocd/pipeline-service/tekton-results/kustomization.yaml
   pipelineSpec:
     params:
       - description: 'Source Repository URL'
