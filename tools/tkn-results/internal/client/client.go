@@ -4,7 +4,7 @@ import (
 	"context"
 	"crypto/x509"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"time"
 
@@ -104,7 +104,7 @@ func (f *ClientFactory) certs() (*x509.CertPool, error) {
 			return nil, err
 		}
 		defer f.Close()
-		b, err := ioutil.ReadAll(f)
+		b, err := io.ReadAll(f)
 		if err != nil {
 			return nil, fmt.Errorf("unable to read TLS cert file: %v", err)
 		}

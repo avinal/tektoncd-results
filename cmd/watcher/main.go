@@ -21,6 +21,7 @@ import (
 	"crypto/x509"
 	"flag"
 	"fmt"
+	"google.golang.org/grpc/credentials/insecure"
 	"io"
 	"log"
 	"os"
@@ -144,7 +145,7 @@ func connectToAPIServer(ctx context.Context, apiAddr string, authMode string) (*
 			grpc.WithTransportCredentials(cred),
 		)
 	case "insecure":
-		opts = append(opts, grpc.WithInsecure())
+		opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	}
 
 	log.Printf("dialing %s...\n", apiAddr)
