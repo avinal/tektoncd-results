@@ -2,6 +2,8 @@ package server
 
 import (
 	"context"
+	"strconv"
+
 	"github.com/tektoncd/results/pkg/api/server/db"
 	"github.com/tektoncd/results/pkg/api/server/db/errors"
 	"github.com/tektoncd/results/pkg/api/server/v1alpha2/auth"
@@ -9,8 +11,9 @@ import (
 	pb "github.com/tektoncd/results/proto/v1alpha2/results_go_proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/structpb"
+
 	"gorm.io/gorm"
-	"strconv"
 )
 
 func (s *Server) GetResultSummary(ctx context.Context, req *pb.GetResultRequest) (*pb.Summary, error) {
@@ -23,7 +26,7 @@ func (s *Server) GetResultSummary(ctx context.Context, req *pb.GetResultRequest)
 		return nil, err
 	}
 
-	m := make(map[string]string)
+	m := make(map[string]interface{})
 
 	num, err := getNumberOfRecordsGivenResult(s.db.WithContext(ctx), parent, name)
 	if err != nil {
@@ -37,15 +40,17 @@ func (s *Server) GetResultSummary(ctx context.Context, req *pb.GetResultRequest)
 	}
 	m["duration"] = dur
 
+	data, err := structpb.NewStruct(m)
+	if err != nil {
+		return nil, err
+	}
+
 	agg := make(map[string]*pb.Aggregations)
-	agg["default"] = &pb.Aggregations{Aggregations: m}
+	agg["default"] = &pb.Aggregations{Aggregations: data}
 
 	return &pb.Summary{
-		Query:   "result:" + name,
-		GroupBy: "default",
-		Data:    agg,
+		Data: agg,
 	}, nil
-
 }
 
 func getNumberOfRecordsGivenResult(gdb *gorm.DB, parent string, name string) (string, error) {
