@@ -90,3 +90,18 @@ echo "Waiting for deployments to be ready..."
 kubectl wait pod "tekton-results-postgres-0" --namespace="tekton-pipelines" --for="condition=Ready" --timeout="120s"
 kubectl wait deployment "tekton-results-api" --namespace="tekton-pipelines" --for="condition=available" --timeout="120s"
 kubectl wait deployment "tekton-results-watcher" --namespace="tekton-pipelines" --for="condition=available" --timeout="120s"
+
+
+echo "install shipwright"
+
+kubectl apply --filename https://github.com/shipwright-io/build/releases/download/v0.12.0/release.yaml --server-side
+curl --silent --location https://raw.githubusercontent.com/shipwright-io/build/v0.12.0/hack/setup-webhook-cert.sh | bash
+
+kubectl apply --filename https://github.com/shipwright-io/build/releases/download/v0.12.0/sample-strategies.yaml --server-side
+
+REGISTRY_SERVER=https://index.docker.io/v1/ REGISTRY_USER=<user> REGISTRY_PASSWORD=<password>
+kubectl create secret docker-registry push-secret \
+    --docker-server=$REGISTRY_SERVER \
+    --docker-username=$REGISTRY_USER \
+    --docker-password=$REGISTRY_PASSWORD  \
+    --docker-email=<email>

@@ -3,6 +3,7 @@ package dynamic
 import (
 	"context"
 
+	swv1beta1 "github.com/shipwright-io/build/pkg/client/clientset/versioned/typed/build/v1beta1"
 	"github.com/tektoncd/pipeline/pkg/client/clientset/versioned/typed/pipeline/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -35,5 +36,14 @@ type PipelineRunClient struct {
 // Patch patches pipelineRun Kubernetes resource.
 func (c *PipelineRunClient) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) error {
 	_, err := c.PipelineRunInterface.Patch(ctx, name, pt, data, opts, subresources...)
+	return err
+}
+
+type BuildRunClient struct {
+	swv1beta1.BuildRunInterface
+}
+
+func (c *BuildRunClient) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) error {
+	_, err := c.BuildRunInterface.Patch(ctx, name, pt, data, opts, subresources...)
 	return err
 }
