@@ -23,12 +23,6 @@ resources:
 - config-logging.yaml
 - config-observability.yaml
 
-patches:
-  - path: migrator.yaml
-    target:
-      kind: Deployment
-      name: api
-
 configMapGenerator:
   # Create a ConfigMap containing the API configs.
   - name: api-config

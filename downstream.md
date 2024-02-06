@@ -45,7 +45,7 @@ upstream        git@github.com:tektoncd/results.git (push)
 8. When the PR is ready to be merged, instead of merging, close it and push the branch to the downstream repo: `git push downstream <downstream-X.Y.Z-NN>` (e.g `git push downstream downstream-0.5.0-02`)
 9. Update the main branch on the fork: `git checkout main && git push`. This will ensure that the downstream main branch is in sync with the upstream one.
 
-The command from step 8 will trigger 4 jobs, three that build the api, watcher and migrator images and one which creates a PR to the pipeline-service repo updating SHAs of the images and ref used in pulling the configuration for the results downstream fork.
+The command from step 8 will trigger 3 jobs, two that build the api and watcher images and one which creates a PR to the pipeline-service repo updating SHAs of the images and ref used in pulling the configuration for the results downstream fork.
 
 ## Downstream only PRs
 
